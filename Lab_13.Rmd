@@ -14,10 +14,10 @@ library(cowplot)
 library(stringr)
 library(gapminder)
 ```
-### Overall Question: What is world health like in Europe? Also Which continent should we focus our health aid spending on?
+### Overall Question: What does world health look like?
 
 #### Specific Question Kelsey
-What is life Expectancy like in Europe?
+What is the life expectancy like in North America compared to the world in the 1800's? 
 ```{r}
 library(tidyverse)
 library(dplyr)
@@ -26,21 +26,21 @@ library(stringr)
 library(gapminder)
 library(forcats)
 library(cowplot)
-read_csv(life_expectancy_years1.csv)
+lifeexp <- read_csv("life_expectancy_years.csv")
 gapminder2 <- gapminder 
 
 
 
-life_exp_year <- function(perms = 1000, continent1,year1, n1 ){
+life_exp_year <- function(perms = 1000, country1,year1, n1 ){
 
 
   mean_mat <- matrix(0,1000,1)
   for (i in c(1:perms))
   {
-    cont1 <- gapminder2 %>% filter(continent == continent1, year ==year1 ) %>% select(lifeExp)
-    cont2 <- gapminder2 %>% filter(year ==year1 ) %>% select(lifeExp)
-    rsamp <- sample(cont1$lifeExp, n1, replace = FALSE)
-    other <- sample(cont2$lifeExp, length(cont2$lifeExp)-n1, replace = FALSE)
+    cont1 <- gapminder2 %>% filter(country == country, year ==year1 ) 
+    cont2 <- gapminder2 %>% filter(year ==year1 ) 
+    rsamp <- sample(cont1, n1, replace = FALSE)
+    other <- sample(cont2, length(cont2$lifeExp)-n1, replace = FALSE)
 
     A <- mean(rsamp)
     B <- mean(other)
@@ -48,17 +48,17 @@ life_exp_year <- function(perms = 1000, continent1,year1, n1 ){
   }
   return(mean_mat)
 }
-rsample <- as.tibble(life_exp_year(perms = 1000, continent1 = "Asia", year1 = 2007, n1=10))
+rsample <- as.tibble(life_exp_year(perms = 1000, country=="United States", year1 = 1800, n1=10))
 
-cont3 <- gapminder2 %>% filter(continent == "Europe", year ==2007 ) %>% select(lifeExp)
-cont4 <- gapminder2 %>% filter( year ==2007 ) %>% select(lifeExp)
-life_ex1 <- summary(cont3$lifeExp)
-life_ex2 <- summary(cont4$lifeExp)
+cont3 <- gapminder2 %>% filter(country == ("United States"|"Mexico"|"Canada"), year ==1800 ) 
+cont4 <- gapminder2 %>% filter( year ==1800 ) 
+life_ex1 <- summary(cont3)
+life_ex2 <- summary(cont4)
 diff <- median(life_ex1)- median(life_ex2)
-std <- sqrt((sd(cont3$lifeExp))^2/length(cont3$lifeExp) + (sd(cont4$lifeExp))^2/length(cont4$lifeExp))
+std <- sqrt((sd(cont3))^2/length(cont3) + (sd(cont4))^2/length(cont4))
 z_score <- diff/std
 z_score
-#So our p-value is .1111 so statistically significant at p>.11 for Asian countries life expectancy
+
 ggplot(rsample, aes(x=V1 ))+geom_histogram()+
   xlab("Means")+
   geom_vline(xintercept = diff, color = "red", size = .3)+
