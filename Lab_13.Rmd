@@ -15,9 +15,10 @@ library(stringr)
 library(gapminder)
 ```
 ### Overall Question: What does world health look like?
+This is interesting, because it is essential to note what health is like in your country and countries around the world. We could use this to see what measures should be taken in different countries to improve health. 
 
 #### Specific Question Kelsey
-How much has health specifically smoking in women improved over a few years and by country? Is it better in the US than other countries? 
+Is health or more specifically smoking in women better in the US than other countries? 
 ```{r}
 library(tidyverse)
 library(dplyr)
@@ -68,8 +69,11 @@ ggplot(rsample, aes(x=V1 ))+geom_histogram()+
   ggtitle("Difference in Means in Women Smoking in 2005")
 
 ```
+####Results Kelsey McKenna
+I found that there is clear evidence that more people in the United States smoked in 2005 compared with other countries. This data is statistically significant at nearly every level. This shows that we have 11.75% more women who smoke in the United States which may indicate that we could be less healthy and more prone to lung disease than other countries around the world. 
 
 
-
-
+###Summary
+####Kelsey McKenna
+I observed the differences in women who smoke between the US and other countries and conducted a difference of means test to test this claim. I found that women are much more likely to smoke than in other countries. I used the test we learned in class and a function so you could change the year easily and see how it changed or change which country you are comparing very easily. 
 
