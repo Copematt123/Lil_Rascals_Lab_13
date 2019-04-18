@@ -75,5 +75,5 @@ I found that there is clear evidence that more people in the United States smoke
 
 ###Summary
 ####Kelsey McKenna
-I observed the differences in women who smoke between the US and other countries and conducted a difference of means test to test this claim. I found that women are much more likely to smoke than in other countries. I used the test we learned in class and a function so you could change the year easily and see how it changed or change which country you are comparing very easily. 
+I observed the differences in women who smoke between the US and other countries and conducted a difference of means permutation test to test this claim. I found that women are much more likely to smoke than in other countries. I used the test we learned in class and a function so you could change the year easily and see how it changed or change which country you are comparing very easily. I had to gather the data to get the years in a format that was easier to work with. It had countries years and percent who smoke. 
 
