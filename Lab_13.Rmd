@@ -73,11 +73,11 @@ ggplot(rsample, aes(x=V1 ))+geom_histogram()+
 I found that there is clear evidence that more people in the United States smoked in 2005 compared with other countries. This data is statistically significant at nearly every level. This shows that we have 11.75% more women who smoke in the United States which may indicate that we could be less healthy and more prone to lung disease than other countries around the world. 
 
 ####Specific Question Shreeya
-
+Is there a difference in the number of deaths from AIDS in the United States compared to the world?
 ```{r}
 aids <- read_csv("aids_deaths.csv")
 aids<-na.omit(aids) %>% gather('2000', '2001','2005', key = "year", value = "number")%>% group_by(year)
-##View(aids)
+names(aids)[1]<-"country"
 cont2 <- aids %>% filter(year=="2001")%>% select(number)
 
    other <- sample(cont2$number, 20, replace = FALSE)
