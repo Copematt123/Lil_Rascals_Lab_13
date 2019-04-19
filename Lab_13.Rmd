@@ -181,9 +181,7 @@ bp1 <- bp %>% gather(key = Year, SBP, `1980`:`2008`)
 bp2 <- bp1 %>% transform(Year = as.numeric(bp1$Year), SPC = as.numeric(bp1$SBP)) %>% na.omit()
 bp2 %>% arrange(desc(SBP))
 names(bp2) <- c("Country", "Year", "SBP")
-cont9 <- bp1 %>% select(SBP) 
-mean(cont9$SBP)
-rcont9 <- sample(cont9$SBP, 15, replace = FALSE)
+
 Blood_pressure <- function(perms = 1000, country1  ){
   mean_mat <- matrix(0,1000,1)
   for (i in c(1:perms))
