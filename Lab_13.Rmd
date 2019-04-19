@@ -73,6 +73,56 @@ ggplot(rsample, aes(x=V1 ))+geom_histogram()+
 I found that there is clear evidence that more people in the United States smoked in 2005 compared with other countries. This data is statistically significant at nearly every level. This shows that we have 11.75% more women who smoke in the United States which may indicate that we could be less healthy and more prone to lung disease than other countries around the world. 
 
 
+
+####Specific Question Matthew
+Does health spending have an effect on the overall health of a country?
+
+
+```{r}
+#Health spending per person
+HSPP <- read_excel("~/ITDS/indicator_per capita total expenditure on health (ppp int. $).xlsx", na = "NA")
+
+#arrange by year which counntry spends the least and most
+HSPP1 <- HSPP %>% gather(key = Year, SPC, `1995.0`:`2010.0`) %>% group_by(Year)
+HSPP <- HSPP1 %>% transform(Year = as.numeric(HSPP1$Year), SPC = as.numeric(HSPP1$SPC)) %>% na.omit()
+HSPP %>% arrange(desc(SPC))
+names(HSPP) <- c("Country", "Year", "SPC")
+
+
+
+    cont1 <- HSPP %>% filter(Country == "United States") 
+    cont1
+    cont2 <- HSPP %>% filter(Country == "Luxembourg") 
+    cont2
+length(cont1$SPC)
+    rcont1 <- sample(cont1, length(cont1$SPC)-15, replace = FALSE)
+    rcont1
+    rcont2 <- sample(cont2, length(cont2$SPC)-15, replace = FALSE)
+    rcont2
+    A <- mean(cont1$SPC)
+    A
+    B <- mean(cont2$SPC)
+    B
+    mean_mat[[i]] <- (A-B)
+
+Spending_per_capita <- function(perms = 1000, country1 , country2 , n1 ){
+  mean_mat <- matrix(0,1000,1)
+  for (i in c(1:perms))
+  {
+    cont1 <- HSPP %>% filter(Country == country1) 
+    cont2 <- HSPP %>% filter(Country == country2) 
+
+    rcont1 <- sample(cont1, length(cont2$SPC)-n1, replace = FALSE)
+    rcont2 <- sample(cont2, length(cont2$SPC)-n1, replace = FALSE)
+    A <- mean(cont1$SPC)
+    B <- mean(cont2$SPC)
+    mean_mat[[i]] <- (A-B)
+  }
+  return(mean_mat)
+}
+rsample <- as.tibble(Spending_per_capita(perms = 1000, country1 == "United States", country2 == "Luxembourg", n1 = 15))
+```
+
 ###Summary
 ####Kelsey McKenna
 I observed the differences in women who smoke between the US and other countries and conducted a difference of means permutation test to test this claim. I found that women are much more likely to smoke than in other countries. I used the test we learned in class and a function so you could change the year easily and see how it changed or change which country you are comparing very easily. I had to gather the data to get the years in a format that was easier to work with. It had countries years and percent who smoke. 
