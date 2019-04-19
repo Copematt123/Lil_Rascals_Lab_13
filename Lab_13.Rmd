@@ -28,9 +28,9 @@ library(gapminder)
 library(forcats)
 library(cowplot)
 smoke <- read_csv("smoking_women.csv")
-  cont2 <- smoke %>% filter(year==2005) %>% select(percent)
 
-    other <- sample(cont2$percent, 20, replace = FALSE)
+
+
 smoke<-na.omit(smoke) %>% gather('2000', '2002','2005', key = "year", value = "percent")
 smokepercent <- function(perms = 1000, year1,country1, n1 ){
 
