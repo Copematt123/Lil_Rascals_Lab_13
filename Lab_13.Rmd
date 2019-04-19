@@ -177,29 +177,30 @@ library(forcats)
 library(cowplot)
 bp <- read_csv("blood_pressure.csv")
 
-bp1 <- bp %>% gather(key = Year, SBP, `1980`:`2008`) %>% group_by(Year)
+bp1 <- bp %>% gather(key = Year, SBP, `1980`:`2008`) 
 bp2 <- bp1 %>% transform(Year = as.numeric(bp1$Year), SPC = as.numeric(bp1$SBP)) %>% na.omit()
 bp2 %>% arrange(desc(SBP))
 names(bp2) <- c("Country", "Year", "SBP")
-
-Blood_pressure <- function(perms = 1000, country1 , country2 , n1 ){
+cont9 <- bp1 %>% select(SBP) 
+mean(cont9$SBP)
+rcont9 <- sample(cont9$SBP, 15, replace = FALSE)
+Blood_pressure <- function(perms = 1000, country1  ){
   mean_mat <- matrix(0,1000,1)
   for (i in c(1:perms))
   {
-    cont1 <- bp %>% filter(country == country1) 
-    cont2 <- bp %>% filter(country == country2) 
+    cont8 <- bp1 %>% filter(country == country1) %>% select(SBP)
+    cont9 <- bp1 %>% select(SBP)
 
-    rcont1 <- sample(cont1, length(cont2$SBP)-n1, replace = FALSE)
-    rcont2 <- sample(cont2, length(cont2$SBP)-n1, replace = FALSE)
+    rcont9 <- sample(cont9$SBP, 15, replace = FALSE)
     
-    A <- mean(cont1$SBP)
-    B <- mean(cont2$SBP)
+    A <- mean(cont8$SBP)
+    B <- mean(rcont9)
     
     mean_mat[[i]] <- (A-B)
   }
   return(mean_mat)
 }
-s <- as.tibble(Blood_pressure(perms = 1000,country1 = "United States",country2 = "United Kingdom", n1 = 15))
+s <- as.tibble(Blood_pressure(perms = 1000,country1 = "United States"))
 
 ggplot(s, aes(x=V1 ))+
   geom_histogram()+
