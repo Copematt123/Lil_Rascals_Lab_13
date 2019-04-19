@@ -72,7 +72,55 @@ ggplot(rsample, aes(x=V1 ))+geom_histogram()+
 ####Results Kelsey McKenna
 I found that there is clear evidence that more people in the United States smoked in 2005 compared with other countries. This data is statistically significant at nearly every level. This shows that we have 11.75% more women who smoke in the United States which may indicate that we could be less healthy and more prone to lung disease than other countries around the world. 
 
+####Specific Question Shreeya
 
+```{r}
+aids <- read_csv("aids_deaths.csv")
+aids<-na.omit(aids) %>% gather('2000', '2001','2005', key = "year", value = "number")%>% group_by(year)
+##View(aids)
+cont2 <- aids %>% filter(year=="2001")%>% select(number)
+
+   other <- sample(cont2$number, 20, replace = FALSE)
+
+
+aidsnum <- function(perms = 1000, year1,country1, n1 ){
+
+
+  mean_mat <- matrix(0,1000,1)
+  for (i in c(1:perms))
+  {
+
+    cont1 <- aids %>% filter(country==country1, year==year1) 
+    cont2 <- aids %>% filter(year==year1) 
+    other <- sample(cont2$number, n1, replace = FALSE)
+
+    A <- mean(cont1$number)
+    B <- mean(other)
+    mean_mat[[i]] <- (A-B)
+  }
+  return(mean_mat)
+}
+
+rsample <- as.tibble(aidsnum(perms = 1000,year1=2000,country1="United States", n1=10))
+cont3 <- aids %>% filter(year==2001, country=="United States") %>% select(number)
+cont4 <- aids %>% filter(year==2005) %>% select(number)
+
+aids1 <- summary(cont3$number)
+aids2 <- summary(cont4$number)
+diff <- median(cont3$number)- median(cont4$number)
+
+std <- sqrt( (sd(cont4$number))^2/length(cont4$number))
+z_score <- diff/std
+z_score
+
+ggplot(rsample, aes(x=V1 ))+geom_histogram()+
+  xlab("Means")+
+  geom_vline(xintercept = diff, color = "orange", size = .3)+
+  ylab("Number")+
+  ggtitle("Difference in Means of Deaths due to AIDS in 2001")
+
+```
+Findings: I found that statistically, the United States had a higher mean of deaths from AIDS in 2001. This is incredibly important information because AIDS is manageable with the proper medicine and so higher rates of AIDs related deaths is an indicator of the health of a country and it's accessibility to medicine. This information is especially crucial at a time where HIV research is rapidly advancing. As is shown in the histogram, the United States has a higher mean than almost all countries, although the United States has comparable deaths to many countries in Africa, where HIV is also a big health issue.
 
 ####Specific Question Matthew
 Does health spending have an effect on the overall health of a country?
@@ -80,7 +128,7 @@ Does health spending have an effect on the overall health of a country?
 
 ```{r}
 #Health spending per person
-HSPP <- read_excel("~/ITDS/indicator_per capita total expenditure on health (ppp int. $).xlsx", na = "NA")
+HSPP <- read_csv("percap.csv", na = "NA")
 
 #arrange by year which country spends the least and most
 HSPP1 <- HSPP %>% gather(key = Year, SPC, `1995.0`:`2010.0`) %>% group_by(Year)
@@ -89,25 +137,32 @@ HSPP %>% arrange(desc(SPC))
 names(HSPP) <- c("Country", "Year", "SPC")
 
 
-Spending_per_capita <- function(perms = 1000, country1 , country2 , n1 ){
+Spending_per_capita <- function(perms = 1000, country1 ,  n1 ){
   mean_mat <- matrix(0,1000,1)
   for (i in c(1:perms))
   {
-    cont1 <- HSPP %>% filter(Country == country1) 
-    cont2 <- HSPP %>% filter(Country == country2) 
+    cont5 <- HSPP %>% filter(Country == country1) 
+    cont6 <- HSPP 
 
-    rcont1 <- sample(cont1, length(cont2$SPC)-n1, replace = FALSE)
-    rcont2 <- sample(cont2, length(cont2$SPC)-n1, replace = FALSE)
+    rcont5 <- sample(cont5$SPC, n1, replace = FALSE)
+    rcont6 <- sample(cont6$SPC, length(cont6$SPC)-n1, replace = FALSE)
     
-    A <- mean(cont1$SPC)
-    B <- mean(cont2$SPC)
+    A <- mean(rcont5)
+    B <- mean(rcont6)
     
     mean_mat[[i]] <- (A-B)
   }
   return(mean_mat)
 }
-rsample <- as.tibble(Spending_per_capita(perms = 1000, country1 = "United States", country2 = "Luxembourg", n1 = 15))
-rsample
+rsample <- as.tibble(Spending_per_capita(perms = 1000, country1 = "United States",  n1 = 15))
+this <- HSPP %>% filter( Country=="United States") %>% select(SPC)
+this1 <- HSPP %>% select(SPC)
+diff <- mean(this$SPC)- mean(this1$SPC)
+ggplot(rsample, aes(x=V1 ))+geom_histogram()+
+  xlab("Means")+
+  geom_vline(xintercept = diff, color = "red", size = .3)+
+  ylab("Number")+
+  ggtitle("Difference in Means in Years of Spedings Means")
 ```
 
 #### Specific Question James
