@@ -102,9 +102,25 @@ aidsnum <- function(perms = 1000, year1,country1, n1 ){
 }
 
 rsample <- as.tibble(aidsnum(perms = 1000,year1=2000,country1="United States", n1=10))
+cont3 <- aids %>% filter(year==2001, country=="United States") %>% select(number)
+cont4 <- aids %>% filter(year==2005) %>% select(number)
+
+aids1 <- summary(cont3$number)
+aids2 <- summary(cont4$number)
+diff <- median(cont3$number)- median(cont4$number)
+
+std <- sqrt( (sd(cont4$number))^2/length(cont4$number))
+z_score <- diff/std
+z_score
+
+ggplot(rsample, aes(x=V1 ))+geom_histogram()+
+  xlab("Means")+
+  geom_vline(xintercept = diff, color = "orange", size = .3)+
+  ylab("Number")+
+  ggtitle("Difference in Means of Deaths due to AIDS in 2001")
 
 ```
-
+Findings: I found that statistically, the United States had a higher mean of deaths from AIDS in 2001. This is incredibly important information because AIDS is manageable with the proper medicine and so higher rates of AIDs related deaths is an indicator of the health of a country and it's accessibility to medicine. This information is especially crucial at a time where HIV research is rapidly advancing. As is shown in the histogram, the United States has a higher mean than almost all countries, although the United States has comparable deaths to many countries in Africa, where HIV is also a big health issue.
 
 ####Specific Question Matthew
 Does health spending have an effect on the overall health of a country?
