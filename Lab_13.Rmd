@@ -177,10 +177,10 @@ library(forcats)
 library(cowplot)
 bp <- read_csv("blood_pressure.csv")
 
-HSPP1 <- bp %>% gather(key = Year, SBP, `1980.0`:`2008.0`) %>% group_by(Year)
-HSPP <- HSPP1 %>% transform(Year = as.numeric(HSPP1$Year), SPC = as.numeric(HSPP1$SPC)) %>% na.omit()
-HSPP %>% arrange(desc(SPC))
-names(HSPP) <- c("Country", "Year", "SPC")
+bp1 <- bp %>% gather(key = Year, SBP, `1980`:`2008`) %>% group_by(Year)
+bp2 <- bp1 %>% transform(Year = as.numeric(bp1$Year), SPC = as.numeric(bp1$SBP)) %>% na.omit()
+bp2 %>% arrange(desc(SBP))
+names(bp2) <- c("Country", "Year", "SBP")
 
 Blood_pressure <- function(perms = 1000, country1 , country2 , n1 ){
   mean_mat <- matrix(0,1000,1)
@@ -200,16 +200,6 @@ Blood_pressure <- function(perms = 1000, country1 , country2 , n1 ){
   return(mean_mat)
 }
 s <- as.tibble(Blood_pressure(perms = 1000,country1 = "United States",country2 = "United Kingdom", n1 = 15))
-
-cont3 <- smoke %>% filter(year==2005, country=="United States") %>% select(percent)
-cont4 <- smoke %>% filter(year==2005) %>% select(percent)
-smoke1 <- summary(cont3$percent)
-smoke2 <- summary(cont4$percent)
-diff <- median(cont3$percent)- median(cont4$percent)
-
-std <- sqrt( (sd(cont4$percent))^2/length(cont4$percent))
-z_score <- diff/std
-z_score
 
 ggplot(s, aes(x=V1 ))+
   geom_histogram()+
